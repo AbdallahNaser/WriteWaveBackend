@@ -7,60 +7,107 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+# WriteWave App
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+This repository contains a **WriteWave App** API built with **Laravel**. The API allows users to create, read, update, and delete blogs, manage images, and handle validation seamlessly.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🚀 Features
 
-## Learning Laravel
+- **Blog Listing**: Fetch all blogs with optional keyword search.
+- **View Blog Details**: Retrieve a specific blog by ID.
+- **Create Blog**: Add new blogs with associated metadata and image handling.
+- **Update Blog**: Edit blog details and update associated images.
+- **Delete Blog**: Remove a blog and its associated image from the system.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## 📂 API Endpoints
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Public Endpoints
 
-## Laravel Sponsors
+1. **Fetch All Blogs**
+   - **URL**: `/api/blogs`
+   - **Method**: `GET`
+   - **Query Parameters**:
+     - `keyword` (optional): Search blogs by title.
+   - **Response**: List of blogs.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+2. **View Blog Details**
+   - **URL**: `/api/blogs/{id}`
+   - **Method**: `GET`
+   - **Response**: Details of the blog or a `404` message if not found.
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+### Protected Endpoints
 
-## Contributing
+1. **Create Blog**
+   - **URL**: `/api/blogs`
+   - **Method**: `POST`
+   - **Request Parameters**:
+     - `title`: Blog title (required, min: 4 characters).
+     - `author`: Blog author (required, min: 3 characters).
+     - `description`: Blog description (optional).
+     - `shortDesc`: Short description (optional).
+     - `image_id`: ID of the temporary image (optional).
+   - **Response**: Success message and blog details.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+2. **Update Blog**
+   - **URL**: `/api/blogs/{id}`
+   - **Method**: `PUT`
+   - **Request Parameters**:
+     - `title`: Blog title (required, min: 4 characters).
+     - `author`: Blog author (required, min: 3 characters).
+     - `description`: Blog description (optional).
+     - `shortDesc`: Short description (optional).
+     - `image_id`: ID of the temporary image (optional).
+   - **Response**: Success message and updated blog details.
 
-## Code of Conduct
+3. **Delete Blog**
+   - **URL**: `/api/blogs/{id}`
+   - **Method**: `DELETE`
+   - **Response**: Success message or `404` message if the blog is not found.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## 🛠 Image Management
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- Temporary images are uploaded and stored in `uploads/temp`.
+- Images are moved to `uploads/temp/blogs` upon blog creation or update.
+- Images are deleted from storage when a blog is deleted.
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 🛡 Validation Rules
+
+- **Title**: Required, minimum 4 characters.
+- **Author**: Required, minimum 3 characters.
+- Validation errors return a response with `status: false` and a list of errors.
+
+---
+
+## 📋 Controller Methods
+
+### `index()`
+- Retrieves a list of blogs, optionally filtered by a keyword.
+- **Response**: JSON containing blog data.
+
+### `show($id)`
+- Fetches details of a specific blog by ID.
+- **Response**: Blog data or error message if not found.
+
+### `store(Request $request)`
+- Validates input and creates a new blog.
+- Handles image assignment from temporary storage.
+- **Response**: Created blog data or validation errors.
+
+### `update($id, Request $request)`
+- Validates input and updates an existing blog.
+- Handles new image assignment from temporary storage.
+- **Response**: Updated blog data or error messages.
+
+### `destroy($id)`
+- Deletes a blog and removes its associated image.
+- **Response**: Success or error message.
